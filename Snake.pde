@@ -1,20 +1,15 @@
 class Snake{
-  //inner class, this help me to keep clear the concep of position
-  class Position{ 
-    int X; int Y;
-    Position(int x, int y){ this.X = x; this.Y = y; } 
-  }
-  
   //snake's variables
   int snakeWeight = 3;
   int x, y;
-  ArrayList route;
+  //ArrayList route;
+  HashMap route = new HashMap();
   int lastBouns = -1;
   int lastkeyCode = 0;
   
   //center 
   Snake(){
-    route = new ArrayList();
+    //route = new ArrayList();
     x = width/2;
     y = height/2;
   }
@@ -30,13 +25,15 @@ class Snake{
     //draw the point
     strokeWeight(snakeWeight);
     stroke(0);
-    point(x, y);
+    //point(x, y);
+    glowPoint(x,y);
     
     //only add the position when a valid key is pressed
     if(keyCode == UP || keyCode == DOWN ||
        keyCode == LEFT || keyCode == RIGHT)
     {
-      route.add(new Position(x, y));  
+      //route.add(new Position(x, y));
+      route.put(x+"-"+y, new Position(x, y));  
     }
   }
   
@@ -76,39 +73,12 @@ class Snake{
     if(x > width){ x = 0; }
   }
   
-  color GetNextColor(){
-    //returns the next color in snake trajectory
-    color actualColor = color(255);
-    
-    //check the next pixel based on the next movement
-    switch(keyCode){
-      case UP:
-        actualColor = get(x, y-snakeWeight);
-        break;
-      case DOWN:
-        actualColor = get(x, y+snakeWeight);
-        break;
-      case LEFT:
-        actualColor = get(x-snakeWeight, y);
-        break;
-      case RIGHT:
-        actualColor = get(x+snakeWeight, y);
-        break;
-    }
-    
-    return actualColor;
-  }
-  
   void checkCollition(){
-    color actualColor = GetNextColor();
-    
-    //check the collition with the color
-    if(actualColor == snakeColor){
+    //found collition
+    if(route.containsKey(x+"-"+y)){
       //clear the score
       bg.notifyLoose();
       
-      //debug
-      //println("collition at: x:"+x+ ", y:"+y + ", frameCount:"+ frameCount);
       strokeWeight(6);
       stroke(255, 0, 0);
       point(x, y);
@@ -116,52 +86,56 @@ class Snake{
   }
   
   void checkPoint(){
-    color actualColor = GetNextColor();
-    if(actualColor == pointColor){
+    if(bg.checkFruit(x, y)){
       //hooray, you get a point
-      background(255);
+      background(0);
       repaint();
-      bg.putItem();
+      bg.putItem(false);
       bg.UpdateScore();
     }
     
-    if(actualColor == bonusColor){
+    if(bg.checkBonus(x, y)){
       //hooray, you get a bonus point
-      background(255);
-      bg.putItem();
+      background(0);
+      g.ReRender();
+      
+      bg.putItem(false);
       bg.UpdateScore();
-      repaint();
       
-      //bonus: blur the route
-      blurScreen();
-      
-      //set the lastBonus variable for blur the route
-      lastBouns = route.size();
-      //println("lastBonus: " + lastBouns);
+      route = new HashMap();
     }
   }
   
   void blurScreen(){
     //blur the screen
     noStroke();
-    fill(255,255,255, 200);
+    fill(255,255,255, 190);
     rect(0,20,width, height);
   }
   
   void repaint(){
-    //repaint all the snakke's route
-    strokeWeight(snakeWeight);
-    stroke(0);
+    g.ReRender();
     
-    for(int i=0; i<route.size()-1; i++){
-      if(i == lastBouns ){
-        blurScreen();
-      } else{
-        stroke(0);    
+    //iterate the route
+    Iterator i = route.entrySet().iterator();  // Get an iterator
+    int counter = 0;
+    while (i.hasNext()) {
+      Map.Entry me = (Map.Entry)i.next();
+      Position p = (Position)me.getValue();
+      glowPoint(p.X, p.Y);
+    }
+  }
+  
+  void glowPoint(int _x, int _y){
+    for(int i=5; i>=0; i--)
+    {
+      strokeWeight((i)*3);
+      if(i==0){
+        stroke(255);
+      } else {
+        stroke(10,255,10, 5);
       }
-      
-      Position p = (Position)route.get(i);
-      point(p.X, p.Y);
+      point(_x, _y);
     }
   }
   
