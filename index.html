@@ -1,0 +1,54 @@
+
+<section> it’s the main container of your UI Components in your App and <article> it must be placed inside your section and must have…. Each section and article must contain an unique ID.
+<section id="main">
+    <article id="main-article">
+        Your content
+    </article>
+</section>
+The JavaScript function that initializes Lungo it’s:
+Lungo.init();
+
+<!DOCTYPE html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>coolebro</title>
+		
+		<link rel="stylesheet" href="components/lungo.brownie/lungo.css">
+		<link rel="stylesheet" href="components/lungo.icon/lungo.icon.css">
+		<link rel="stylesheet" href="components/lungo.brownie/lungo.theme.css">
+		<script src="components/quojs/quo.js"></script>
+		<script src="components/lungo/lungo.js"></script>
+
+
+		<!--[if lt IE 9]>
+			<script type="text/javascript">alert("Your browser does not support the canvas tag.");</script>
+		<![endif]-->
+		<script src="web-export/processing.js" type="text/javascript"></script>
+		<script type="text/javascript">
+// convenience function to get the id attribute of generated sketch html element
+function getProcessingSketchId () { return 'coolebro'; }
+</script>
+
+	</head>
+	<body>
+		<div id="content">
+			<div>
+				<canvas id="coolebro" data-processing-sources="web-export/coolebro.pde" 
+						width="320" height="480">
+					<p>Your browser does not support the canvas tag.</p>
+					<!-- Note: you can put any alternative content here. -->
+				</canvas>
+				<noscript>
+					<p>JavaScript is required to view the contents of this page.</p>
+				</noscript>
+	    	</div>
+			<h1>coolebro</h1>
+    		<p id="description"></p>
+			<p id="sources">Source code: <a href="coolebro.pde">coolebro</a> </p>
+			<p>
+			Built with <a href="http://processing.org" title="Processing">Processing</a>
+			and <a href="http://processingjs.org" title="Processing.js">Processing.js</a>
+			</p>
+		</div>
+	</body>
+</html>

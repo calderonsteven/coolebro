@@ -4,6 +4,7 @@ class BoardGame{
   int itemsUsed = 0;
   ArrayList bonus = new ArrayList();
   ArrayList fruits = new ArrayList();
+  boolean loose = false;
   
   BoardGame(){
     clearBar();
@@ -52,7 +53,7 @@ class BoardGame{
   }
   
   boolean checkFruit(int _x, int _y){
-    //iterate the route 
+    //iterate the fruits 
     for(int i=0; i<fruits.size(); i++){
       Position p = (Position)fruits.get(i);
       
@@ -62,6 +63,8 @@ class BoardGame{
       {
         fruits = new ArrayList();
         bonus = new ArrayList();
+        playerPickup.stop();
+        playerPickup.play();
         return true;
       }
     }
@@ -80,6 +83,8 @@ class BoardGame{
       {
         fruits = new ArrayList();
         bonus = new ArrayList();
+        playerPowerup.stop();
+        playerPowerup.play();
         return true;
       }
     }
@@ -89,23 +94,43 @@ class BoardGame{
   
   void clearBar(){
     noStroke();
-    fill(3);
-    rect(0, 0, width, 20);
+    fill(0,0,0,200); 
+    rect(0, 0, width, 38);
   }
   
   void notifyLoose(){
+    loose = true;
     clearBar();
-    noStroke();
-    fill(255, 0, 0);
-    text("You Loose :( , your final score is " + score , 5, 15);
+    
+    //show the message in the bar
+    fill(255, 255, 255);
+    text("¡You Loose! :( ", 50, 15);
+    text("Final score: " + score , 50, 30);
+    
+    //play the loose sound
+    playerExplosion.stop();
+    playerExplosion.play();
+    
+    //show the error screen
+    fill(255,0,0, 100);
+    rect(0,30,width,height);
+    
+    s.route = new HashMap();
   }
   
   void UpdateScore(){
     score++;
+    loose = false;
+    PrintScore();
+  }
+  
+  void PrintScore(){
+    if(loose){ return; }
     
     //clear the score
     clearBar();
-    fill(255,0,0);
-    text("Score : "+score, 5, 15);
+    fill(255, 255, 255);
+    text("Score: " + score, 50, 15);
+    text("Time: " + millis()/1000, 50, 30);
   }
 }

@@ -1,9 +1,16 @@
+ /* @pjs font="http://themes.googleusercontent.com/static/fonts/audiowide/v1/8XtYtNKEyyZh481XVWfVOrO3LdcAZYWl9Si6vvxL-qU.woff"; */
+ 
 import java.util.Iterator.*;
 
 //global variables
 Snake s;
 BoardGame bg;
 Grid g;
+Maxim maxim;
+AudioPlayer playerExplosion;
+AudioPlayer playerPickup;
+AudioPlayer playerPowerup;
+AudioPlayer playerAmbient;
 
 color pointColor = color(0,0,255);
 color bonusColor = color(0,255,0);
@@ -14,6 +21,12 @@ void setup(){
   strokeWeight(3);
   background(0);
   
+  //start fonts
+  PFont font = loadFont("http://themes.googleusercontent.com/static/fonts/audiowide/v1/8XtYtNKEyyZh481XVWfVOrO3LdcAZYWl9Si6vvxL-qU.woff"); 
+  textFont(font, 15);
+ 
+  setupAudio();
+  
   //start the black magic
   s = new Snake();
   bg = new BoardGame();
@@ -22,8 +35,11 @@ void setup(){
 
 void draw(){
   if(g.grigEnded){
-    s.update();
-    bg.checkForNewItem();
+    if(!bg.loose){
+      s.update();
+      bg.checkForNewItem();
+      bg.PrintScore();
+    }
   }else{
     g.render();
   }
@@ -56,12 +72,29 @@ void mousePressed(){
     if(mouseY < (height/2)) { keyCode = UP; }
   }
 }
+
+/*custom function*/
+void setupAudio(){
+  //start audio
+  maxim = new Maxim(this);
+  playerExplosion = maxim.loadFile("Explosion.wav");
+  playerPickup = maxim.loadFile("Pickup.wav");
+  playerPowerup = maxim.loadFile("Powerup.wav");
+  playerAmbient = maxim.loadFile("SymphoniesOfThePlanets.mp3");
+  
+  playerExplosion.setLooping(false);
+  playerPickup.setLooping(false);
+  playerPowerup.setLooping(false);
+  playerAmbient.setLooping(true);
+  playerAmbient.play();
+}
 class BoardGame{
   int score = 0;
   int timeElapsed = 0;
   int itemsUsed = 0;
   ArrayList bonus = new ArrayList();
   ArrayList fruits = new ArrayList();
+  boolean loose = false;
   
   BoardGame(){
     clearBar();
@@ -110,7 +143,7 @@ class BoardGame{
   }
   
   boolean checkFruit(int _x, int _y){
-    //iterate the route 
+    //iterate the fruits 
     for(int i=0; i<fruits.size(); i++){
       Position p = (Position)fruits.get(i);
       
@@ -120,6 +153,8 @@ class BoardGame{
       {
         fruits = new ArrayList();
         bonus = new ArrayList();
+        playerPickup.stop();
+        playerPickup.play();
         return true;
       }
     }
@@ -138,6 +173,8 @@ class BoardGame{
       {
         fruits = new ArrayList();
         bonus = new ArrayList();
+        playerPowerup.stop();
+        playerPowerup.play();
         return true;
       }
     }
@@ -147,24 +184,44 @@ class BoardGame{
   
   void clearBar(){
     noStroke();
-    fill(3);
-    rect(0, 0, width, 20);
+    fill(0,0,0,200); 
+    rect(0, 0, width, 38);
   }
   
   void notifyLoose(){
+    loose = true;
     clearBar();
-    noStroke();
-    fill(255, 0, 0);
-    text("You Loose :( , your final score is " + score , 5, 15);
+    
+    //show the message in the bar
+    fill(255, 255, 255);
+    text("¡You Loose! :( ", 50, 15);
+    text("Final score: " + score , 50, 30);
+    
+    //play the loose sound
+    playerExplosion.stop();
+    playerExplosion.play();
+    
+    //show the error screen
+    fill(255,0,0, 100);
+    rect(0,30,width,height);
+    
+    s.route = new HashMap();
   }
   
   void UpdateScore(){
     score++;
+    loose = false;
+    PrintScore();
+  }
+  
+  void PrintScore(){
+    if(loose){ return; }
     
     //clear the score
     clearBar();
-    fill(255,0,0);
-    text("Score : "+score, 5, 15);
+    fill(255, 255, 255);
+    text("Score: " + score, 50, 15);
+    text("Time: " + millis()/1000, 50, 30);
   }
 }
 class Grid{
