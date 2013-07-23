@@ -6,11 +6,13 @@ import java.util.Iterator.*;
 Snake s;
 BoardGame bg;
 Grid g;
+
 Maxim maxim;
 AudioPlayer playerExplosion;
 AudioPlayer playerPickup;
 AudioPlayer playerPowerup;
-AudioPlayer playerAmbient;
+
+PFont font;
 
 color pointColor = color(0,0,255);
 color bonusColor = color(0,255,0);
@@ -22,9 +24,8 @@ void setup(){
   background(0);
   
   //start fonts
-  PFont font = loadFont("http://themes.googleusercontent.com/static/fonts/audiowide/v1/8XtYtNKEyyZh481XVWfVOrO3LdcAZYWl9Si6vvxL-qU.woff"); 
-  textFont(font, 15);
- 
+  font = loadFont("http://themes.googleusercontent.com/static/fonts/audiowide/v1/8XtYtNKEyyZh481XVWfVOrO3LdcAZYWl9Si6vvxL-qU.woff"); 
+  
   setupAudio();
   
   //start the black magic
@@ -36,6 +37,7 @@ void setup(){
 void draw(){
   if(g.grigEnded){
     if(!bg.loose){
+      //meanwhile is playing
       s.update();
       bg.checkForNewItem();
       bg.PrintScore();
@@ -54,10 +56,23 @@ void keyPressed(){
   if(key == 'i'){
     bg.putItem(false);
   }
+  
+  if(key == 'n'){
+    startNewGame();
+  }
 }
 
 //controls for touchScreen
 void mousePressed(){
+  //when you loose
+  if(bg.loose){
+    if(mouseY <= 40)  { 
+       startNewGame();
+    }
+    return;
+  }
+  
+  //when you are playing
   if(s.lastkeyCode == null){
     s.lastkeyCode = LEFT;
   }
@@ -80,13 +95,14 @@ void setupAudio(){
   playerExplosion = maxim.loadFile("Explosion.wav");
   playerPickup = maxim.loadFile("Pickup.wav");
   playerPowerup = maxim.loadFile("Powerup.wav");
-  playerAmbient = maxim.loadFile("SymphoniesOfThePlanets.mp3");
   
   playerExplosion.setLooping(false);
   playerPickup.setLooping(false);
   playerPowerup.setLooping(false);
-  playerAmbient.setLooping(true);
-  playerAmbient.play();
+}
+
+void startNewGame(){
+ setup();
 }
 class BoardGame{
   int score = 0;
@@ -184,8 +200,8 @@ class BoardGame{
   
   void clearBar(){
     noStroke();
-    fill(0,0,0,200); 
-    rect(0, 0, width, 38);
+    fill(0); 
+    rect(0, 0, width, 25);
   }
   
   void notifyLoose(){
@@ -193,19 +209,19 @@ class BoardGame{
     clearBar();
     
     //show the message in the bar
-    fill(255, 255, 255);
-    text("¡You Loose! :( ", 50, 15);
-    text("Final score: " + score , 50, 30);
+    fill(255);
+    textFont(font, 25);
+    text("New Game? Tap Here!", 10, 24);
     
     //play the loose sound
     playerExplosion.stop();
     playerExplosion.play();
     
-    //show the error screen
-    fill(255,0,0, 100);
-    rect(0,30,width,height);
-    
     s.route = new HashMap();
+    
+    //red screen
+    fill(255,0,0,80);
+    rect(0,28,width,height);
   }
   
   void UpdateScore(){
@@ -218,10 +234,14 @@ class BoardGame{
     if(loose){ return; }
     
     //clear the score
-    clearBar();
-    fill(255, 255, 255);
-    text("Score: " + score, 50, 15);
-    text("Time: " + millis()/1000, 50, 30);
+    noStroke();
+    fill(0); 
+    rect(0, 0, width, 30);
+    
+    //setup the error message
+    fill(255);
+    textFont(font, 25);
+    text("Score: " + score + " — Time: " + (int)(millis()/1000), 25, 25);
   }
 }
 class Grid{
@@ -236,6 +256,7 @@ class Grid{
         if(x > width && y > height){ 
           grigEnded = true;
           gridRendered = get();
+          bg.putItem(false);
           return; 
         }
         
@@ -333,8 +354,8 @@ class Snake{
   
   void checkLimits(){
     //chek limits
-    if(y < 15){ y = height; }
-    if(y > height){ y = 15;  }
+    if(y < 30){ y = height; }
+    if(y > height){ y = 30;  }
     if(x < 0){ x = width; }
     if(x > width){ x = 0; }
   }

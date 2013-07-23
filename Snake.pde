@@ -67,8 +67,8 @@ class Snake{
   
   void checkLimits(){
     //chek limits
-    if(y < 15){ y = height; }
-    if(y > height){ y = 15;  }
+    if(y < 30){ y = height; }
+    if(y > height){ y = 30;  }
     if(x < 0){ x = width; }
     if(x > width){ x = 0; }
   }

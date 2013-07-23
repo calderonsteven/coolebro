@@ -6,11 +6,13 @@ import java.util.Iterator.*;
 Snake s;
 BoardGame bg;
 Grid g;
+
 Maxim maxim;
 AudioPlayer playerExplosion;
 AudioPlayer playerPickup;
 AudioPlayer playerPowerup;
-AudioPlayer playerAmbient;
+
+PFont font;
 
 color pointColor = color(0,0,255);
 color bonusColor = color(0,255,0);
@@ -22,9 +24,8 @@ void setup(){
   background(0);
   
   //start fonts
-  PFont font = loadFont("http://themes.googleusercontent.com/static/fonts/audiowide/v1/8XtYtNKEyyZh481XVWfVOrO3LdcAZYWl9Si6vvxL-qU.woff"); 
-  textFont(font, 15);
- 
+  font = loadFont("http://themes.googleusercontent.com/static/fonts/audiowide/v1/8XtYtNKEyyZh481XVWfVOrO3LdcAZYWl9Si6vvxL-qU.woff"); 
+  
   setupAudio();
   
   //start the black magic
@@ -36,6 +37,7 @@ void setup(){
 void draw(){
   if(g.grigEnded){
     if(!bg.loose){
+      //meanwhile is playing
       s.update();
       bg.checkForNewItem();
       bg.PrintScore();
@@ -54,10 +56,23 @@ void keyPressed(){
   if(key == 'i'){
     bg.putItem(false);
   }
+  
+  if(key == 'n'){
+    startNewGame();
+  }
 }
 
 //controls for touchScreen
 void mousePressed(){
+  //when you loose
+  if(bg.loose){
+    if(mouseY <= 40)  { 
+       startNewGame();
+    }
+    return;
+  }
+  
+  //when you are playing
   if(s.lastkeyCode == null){
     s.lastkeyCode = LEFT;
   }
@@ -80,11 +95,12 @@ void setupAudio(){
   playerExplosion = maxim.loadFile("Explosion.wav");
   playerPickup = maxim.loadFile("Pickup.wav");
   playerPowerup = maxim.loadFile("Powerup.wav");
-  playerAmbient = maxim.loadFile("SymphoniesOfThePlanets.mp3");
   
   playerExplosion.setLooping(false);
   playerPickup.setLooping(false);
   playerPowerup.setLooping(false);
-  playerAmbient.setLooping(true);
-  playerAmbient.play();
+}
+
+void startNewGame(){
+ setup();
 }

@@ -10,6 +10,7 @@ class Grid{
         if(x > width && y > height){ 
           grigEnded = true;
           gridRendered = get();
+          bg.putItem(false);
           return; 
         }
         

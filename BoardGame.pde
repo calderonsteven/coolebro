@@ -94,8 +94,8 @@ class BoardGame{
   
   void clearBar(){
     noStroke();
-    fill(0,0,0,200); 
-    rect(0, 0, width, 38);
+    fill(0); 
+    rect(0, 0, width, 25);
   }
   
   void notifyLoose(){
@@ -103,19 +103,19 @@ class BoardGame{
     clearBar();
     
     //show the message in the bar
-    fill(255, 255, 255);
-    text("¡You Loose! :( ", 50, 15);
-    text("Final score: " + score , 50, 30);
+    fill(255);
+    textFont(font, 25);
+    text("New Game? Tap Here!", 10, 24);
     
     //play the loose sound
     playerExplosion.stop();
     playerExplosion.play();
     
-    //show the error screen
-    fill(255,0,0, 100);
-    rect(0,30,width,height);
-    
     s.route = new HashMap();
+    
+    //red screen
+    fill(255,0,0,80);
+    rect(0,28,width,height);
   }
   
   void UpdateScore(){
@@ -128,9 +128,13 @@ class BoardGame{
     if(loose){ return; }
     
     //clear the score
-    clearBar();
-    fill(255, 255, 255);
-    text("Score: " + score, 50, 15);
-    text("Time: " + millis()/1000, 50, 30);
+    noStroke();
+    fill(0); 
+    rect(0, 0, width, 30);
+    
+    //setup the error message
+    fill(255);
+    textFont(font, 25);
+    text("Score: " + score + " — Time: " + (int)(millis()/1000), 25, 25);
   }
 }
