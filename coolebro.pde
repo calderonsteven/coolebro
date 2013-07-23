@@ -19,7 +19,12 @@ color bonusColor = color(0,255,0);
 color snakeColor = color(0);
 
 void setup(){
-  size(320, 480);
+  jsHelper js = new jsHelper();
+  //js.printSizeParent();
+  size(js.width, js.height);
+  
+  //size(320, 480);
+  
   strokeWeight(3);
   background(0);
   
@@ -59,6 +64,11 @@ void keyPressed(){
   
   if(key == 'n'){
     startNewGame();
+  }
+
+  if(key == 'c'){
+    jsHelper js = new jsHelper();
+    js.printSizeParent();
   }
 }
 

@@ -135,6 +135,6 @@ class BoardGame{
     //setup the error message
     fill(255);
     textFont(font, 25);
-    text("Score: " + score + " — Time: " + (int)(millis()/1000), 25, 25);
+    text("Score: " + score + " - Time: " + (int)(millis()/1000), 25, 25);
   }
 }

@@ -19,7 +19,12 @@ color bonusColor = color(0,255,0);
 color snakeColor = color(0);
 
 void setup(){
-  size(320, 480);
+  jsHelper js = new jsHelper();
+  //js.printSizeParent();
+  size(js.width, js.height);
+  
+  //size(320, 480);
+  
   strokeWeight(3);
   background(0);
   
@@ -59,6 +64,11 @@ void keyPressed(){
   
   if(key == 'n'){
     startNewGame();
+  }
+
+  if(key == 'c'){
+    jsHelper js = new jsHelper();
+    js.printSizeParent();
   }
 }
 
@@ -241,7 +251,7 @@ class BoardGame{
     //setup the error message
     fill(255);
     textFont(font, 25);
-    text("Score: " + score + " — Time: " + (int)(millis()/1000), 25, 25);
+    text("Score: " + score + " - Time: " + (int)(millis()/1000), 25, 25);
   }
 }
 class Grid{

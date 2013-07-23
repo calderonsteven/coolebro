@@ -13,16 +13,20 @@ body {
   position: absolute;
 }
 #leftColumn{
-  position: fixed;
+  position: absolute;
   right: 10px;
   bottom: 10px;
   top: 60px;
 }
 
 
-/*responsive hack for map container*/
-@media (max-width: 600px) {
+
+/*responsive hack for map container */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
   #leftColumn{
-    /*position: absolute !important;*/
-  }  
+    right: 0;
+    bottom: 0;
+    top: 50px;
+  }
 }
+
