@@ -3,9 +3,12 @@
 import java.util.Iterator.*;
 
 //global variables
+jsHelper js;
 Snake s;
 BoardGame bg;
 Grid g;
+
+int startTime;
 
 Maxim maxim;
 AudioPlayer playerExplosion;
@@ -19,10 +22,8 @@ color bonusColor = color(0,255,0);
 color snakeColor = color(0);
 
 void setup(){
-  jsHelper js = new jsHelper();
-  //js.printSizeParent();
+  js = new jsHelper();
   size(js.width, js.height);
-  
   //size(320, 480);
   
   strokeWeight(3);
@@ -37,6 +38,11 @@ void setup(){
   s = new Snake();
   bg = new BoardGame();
   g = new Grid();
+  
+  //starts with default values
+  frameCount = 0;
+  frameRate(60);
+  startTime = millis();
 }
 
 void draw(){
@@ -46,7 +52,13 @@ void draw(){
       s.update();
       bg.checkForNewItem();
       bg.PrintScore();
-    }
+      
+      //speed Up the snake
+      int speed = (60 + ( millis() - startTime) / 999 );
+      frameRate(speed);
+      js = new jsHelper();
+      //js.log(speed);
+    } 
   }else{
     g.render();
   }

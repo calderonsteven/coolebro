@@ -25,7 +25,7 @@ class Grid{
         line(0, y, width, y);
     }
     
-    void ReRender(){
+    void ReRender(){ 
       image(gridRendered,0,0);
     }
 }

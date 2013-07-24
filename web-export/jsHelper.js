@@ -9,6 +9,10 @@ function jsHelper() {
     console.log(width, height);
   }
   
+  this.log = function(text){
+    console.log(text); 
+  }
+  
   return this;
 }
   
